@@ -45,6 +45,27 @@ void ImguiSession::update(igl::SurfaceTextures surfaceTextures) noexcept {
 
   { // Draw using ImGui every frame
     _imguiSession->beginFrame(framebufferDesc, getPlatform().getDisplayContext().pixelsPerPoint);
+
+    if (_isFirstFrame) {
+      // Suggestion from
+      // https://discourse.dearimgui.org/t/add-method-to-modify-default-size-pos-of-demo-window/184/2
+      // to avoid terrible default position & size of the demo window.
+      ImGuiIO io = ImGui::GetIO();
+      float display_width = (float)io.DisplaySize.x;
+      float display_height = (float)io.DisplaySize.y;
+      float demo_window_pos_x = display_width * 0.10;
+      float demo_window_pos_y = display_height * 0.10;
+      float demo_window_size_x = display_width * 0.80;
+      float demo_window_size_y = display_height * 0.80;
+
+      ImGui::SetNextWindowPos(ImVec2(demo_window_pos_x, demo_window_pos_y), 0);
+      ImGui::SetNextWindowSize(ImVec2(demo_window_size_x, demo_window_size_y), 0);
+      ImGui::Begin("Dear ImGui Demo");
+      ImGui::End();
+
+      _isFirstFrame = false;
+    }
+
     ImGui::ShowDemoWindow();
     _imguiSession->endFrame(getPlatform().getDevice(), *encoder);
   }

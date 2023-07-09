@@ -26,6 +26,8 @@ class ImguiSession : public RenderSession {
   std::shared_ptr<igl::ICommandQueue> _commandQueue;
   std::shared_ptr<igl::IFramebuffer> _outputFramebuffer;
   std::unique_ptr<iglu::imgui::Session> _imguiSession;
+
+  bool _isFirstFrame = true;
 };
 
 } // namespace shell
