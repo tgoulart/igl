@@ -1,0 +1,6 @@
+macOS:
+$ cmake .. -G Ninja -DIGL_WITH_VULKAN=OFF
+$ cmake .. -G Ninja -DIGL_WITH_VULKAN=OFF -DIGL_WITH_TESTS=ON
+
+iOS:
+$ cmake .. -G Xcode -DCMAKE_TOOLCHAIN_FILE=../third-party/deps/src/ios-cmake/ios.toolchain.cmake -DIGL_WITH_VULKAN=OFF -DPLATFORM=OS64 -DDEPLOYMENT_TARGET=13
