@@ -2609,11 +2609,8 @@ int main(int argc, char* argv[]) {
   // Main loop
   while (!glfwWindowShouldClose(window_)) {
     {
-      FramebufferDesc framebufferDesc;
-      framebufferDesc.colorAttachments[0].texture = getNativeDrawable();
-      framebufferDesc.depthAttachment.texture = getNativeDepthDrawable();
 #if IGL_WITH_IGLU
-      imguiSession_->beginFrame(framebufferDesc, 1.0f);
+      imguiSession_->beginFrame(*fbMain_, 1.0f);
       ImGui::ShowDemoWindow();
 
       ImGui::Begin("Keyboard hints:", nullptr, ImGuiWindowFlags_AlwaysAutoResize);

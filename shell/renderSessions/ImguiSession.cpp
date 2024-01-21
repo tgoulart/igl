@@ -44,7 +44,8 @@ void ImguiSession::update(igl::SurfaceTextures surfaceTextures) noexcept {
   auto encoder = cmdBuffer->createRenderCommandEncoder(renderPassDesc, _outputFramebuffer);
 
   { // Draw using ImGui every frame
-    _imguiSession->beginFrame(framebufferDesc, getPlatform().getDisplayContext().pixelsPerPoint);
+    _imguiSession->beginFrame(*_outputFramebuffer,
+                              getPlatform().getDisplayContext().pixelsPerPoint);
 
     if (_isFirstFrame) {
       // Suggestion from

@@ -23,7 +23,7 @@ namespace imgui {
 
 class Session {
  public:
-  void beginFrame(const igl::FramebufferDesc& desc, float displayScale);
+  void beginFrame(const igl::IFramebuffer& target, float displayScale);
   void endFrame(igl::IDevice& device, igl::IRenderCommandEncoder& cmdEncoder);
 
   Session(igl::IDevice& device,

@@ -484,7 +484,7 @@ static void render(const std::shared_ptr<ITexture>& nativeDrawable, uint32_t fra
   }
 
 #if IGL_WITH_IGLU
-  imguiSession_->beginFrame(framebufferDesc_, 1.0f);
+  imguiSession_->beginFrame(*framebuffer_, 1.0f);
 
   ImGui::Begin("Texture Viewer", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
   ImGui::Image(ImTextureID(texture1_.get()), ImVec2(512, 512));

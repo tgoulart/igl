@@ -205,7 +205,7 @@ class Session::Renderer {
   Renderer(igl::IDevice& device);
   ~Renderer();
 
-  void newFrame(const igl::FramebufferDesc& desc);
+  void newFrame(const igl::IFramebuffer& target);
   void renderDrawData(igl::IDevice& device,
                       igl::IRenderCommandEncoder& cmdEncoder,
                       ImDrawData* drawData);
@@ -279,18 +279,18 @@ Session::Renderer::~Renderer() {
   io.Fonts->TexID = nullptr;
 }
 
-void Session::Renderer::newFrame(const igl::FramebufferDesc& desc) {
-  IGL_ASSERT(desc.colorAttachments[0].texture);
+void Session::Renderer::newFrame(const igl::IFramebuffer& target) {
+  IGL_ASSERT(target.getColorAttachment(0));
   _renderPipelineDesc.targetDesc.colorAttachments.resize(1);
   _renderPipelineDesc.targetDesc.colorAttachments[0].textureFormat =
-      desc.colorAttachments[0].texture->getFormat();
+      target.getColorAttachment(0)->getFormat();
   _renderPipelineDesc.targetDesc.depthAttachmentFormat =
-      desc.depthAttachment.texture ? desc.depthAttachment.texture->getFormat()
-                                   : igl::TextureFormat::Invalid;
+      target.getDepthAttachment() ? target.getDepthAttachment()->getFormat()
+                                  : igl::TextureFormat::Invalid;
   _renderPipelineDesc.targetDesc.stencilAttachmentFormat =
-      desc.stencilAttachment.texture ? desc.stencilAttachment.texture->getFormat()
-                                     : igl::TextureFormat::Invalid;
-  _renderPipelineDesc.sampleCount = desc.colorAttachments[0].texture->getSamples();
+      target.getStencilAttachment() ? target.getStencilAttachment()->getFormat()
+                                    : igl::TextureFormat::Invalid;
+  _renderPipelineDesc.sampleCount = target.getColorAttachment(0)->getSamples();
 }
 
 void Session::Renderer::renderDrawData(igl::IDevice& device,
@@ -452,19 +452,19 @@ Session::~Session() {
   ImGui::DestroyContext();
 }
 
-void Session::beginFrame(const igl::FramebufferDesc& desc, float displayScale) {
+void Session::beginFrame(const igl::IFramebuffer& target, float displayScale) {
   makeCurrentContext();
 
-  IGL_ASSERT(desc.colorAttachments[0].texture);
+  IGL_ASSERT(target.getColorAttachment(0));
 
-  const igl::Size size = desc.colorAttachments[0].texture->getSize();
+  const igl::Size size = target.getColorAttachment(0)->getSize();
 
   ImGuiIO& io = ImGui::GetIO();
   io.DisplaySize = ImVec2(size.width / displayScale, size.height / displayScale);
   io.DisplayFramebufferScale = ImVec2(displayScale, displayScale);
   io.IniFilename = nullptr;
 
-  _renderer->newFrame(desc);
+  _renderer->newFrame(target);
   ImGui::NewFrame();
 }
 
