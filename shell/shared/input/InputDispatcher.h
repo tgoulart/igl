@@ -41,6 +41,7 @@ class InputDispatcher {
   void queueEvent(const MouseMotionEvent& event);
   void queueEvent(const MouseWheelEvent& event);
   void queueEvent(const TouchEvent& event);
+  void queueEvent(const CharacterEvent& event);
   void queueEvent(const KeyEvent& event);
   void queueEvent(const RayEvent& event);
 
@@ -55,6 +56,7 @@ class InputDispatcher {
     // Touch
     Touch,
     // Key
+    Character,
     Key,
     // Ray
     Ray,
@@ -66,6 +68,7 @@ class InputDispatcher {
                               MouseMotionEvent,
                               MouseWheelEvent,
                               TouchEvent,
+                              CharacterEvent,
                               KeyEvent,
                               RayEvent>;
     Data data;

@@ -436,6 +436,7 @@ void Session::initialize(igl::IDevice& device) {
   if (!_isInitialized) {
     _inputListener = std::make_shared<InputListener>(_context);
     _renderer = std::make_unique<Renderer>(device);
+    _inputDispatcher.addKeyListener(_inputListener);
     _inputDispatcher.addMouseListener(_inputListener);
     _inputDispatcher.addTouchListener(_inputListener);
     _isInitialized = true;
@@ -447,6 +448,7 @@ Session::~Session() {
 
   _inputDispatcher.removeTouchListener(_inputListener);
   _inputDispatcher.removeMouseListener(_inputListener);
+  _inputDispatcher.removeKeyListener(_inputListener);
   _renderer = nullptr;
   _inputListener = nullptr;
   ImGui::DestroyContext();
