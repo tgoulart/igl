@@ -7,6 +7,8 @@
 
 #import "ViewController.h"
 
+#include <Carbon/Carbon.h>
+
 #import "GLView.h"
 #import "MetalView.h"
 #import "VulkanView.h"
@@ -485,12 +487,250 @@ using namespace igl;
   return NSMakePoint(pos.x, contentRect.size.height - pos.y);
 }
 
+// See https://github.com/ocornut/imgui/blob/master/backends/imgui_impl_osx.mm
+static std::optional<igl::shell::Key> convertToShellKey(int key_code) {
+  switch (key_code) {
+    // Control
+  case kVK_Escape:
+    return igl::shell::Key::Escape;
+  case kVK_Shift:
+    return igl::shell::Key::LeftShift;
+  case kVK_Control:
+    return igl::shell::Key::LeftCtrl;
+  case kVK_Option:
+    return igl::shell::Key::LeftAlt;
+  case kVK_Command:
+    return igl::shell::Key::LeftSuper;
+  case kVK_RightShift:
+    return igl::shell::Key::RightShift;
+  case kVK_RightControl:
+    return igl::shell::Key::RightCtrl;
+  case kVK_RightOption:
+    return igl::shell::Key::RightAlt;
+  case kVK_RightCommand:
+    return igl::shell::Key::RightSuper;
+
+    // Navigation
+  case kVK_LeftArrow:
+    return igl::shell::Key::LeftArrow;
+  case kVK_RightArrow:
+    return igl::shell::Key::RightArrow;
+  case kVK_DownArrow:
+    return igl::shell::Key::DownArrow;
+  case kVK_UpArrow:
+    return igl::shell::Key::UpArrow;
+  case kVK_PageUp:
+    return igl::shell::Key::PageUp;
+  case kVK_PageDown:
+    return igl::shell::Key::PageDown;
+  case kVK_Home:
+    return igl::shell::Key::Home;
+  case kVK_End:
+    return igl::shell::Key::End;
+  case kVK_Help:
+    return igl::shell::Key::Insert;
+  case kVK_ForwardDelete:
+    return igl::shell::Key::Delete;
+
+    // Typing
+  case kVK_Space:
+    return igl::shell::Key::Space;
+  case kVK_Return:
+    return igl::shell::Key::Enter;
+  case kVK_Delete:
+    return igl::shell::Key::Backspace;
+  case kVK_Tab:
+    return igl::shell::Key::Tab;
+  case kVK_CapsLock:
+    return igl::shell::Key::CapsLock;
+
+    // Characters
+  case kVK_ANSI_A:
+    return igl::shell::Key::A;
+  case kVK_ANSI_B:
+    return igl::shell::Key::B;
+  case kVK_ANSI_C:
+    return igl::shell::Key::C;
+  case kVK_ANSI_D:
+    return igl::shell::Key::D;
+  case kVK_ANSI_E:
+    return igl::shell::Key::E;
+  case kVK_ANSI_F:
+    return igl::shell::Key::F;
+  case kVK_ANSI_G:
+    return igl::shell::Key::G;
+  case kVK_ANSI_H:
+    return igl::shell::Key::H;
+  case kVK_ANSI_I:
+    return igl::shell::Key::I;
+  case kVK_ANSI_J:
+    return igl::shell::Key::J;
+  case kVK_ANSI_K:
+    return igl::shell::Key::K;
+  case kVK_ANSI_L:
+    return igl::shell::Key::L;
+  case kVK_ANSI_M:
+    return igl::shell::Key::M;
+  case kVK_ANSI_N:
+    return igl::shell::Key::N;
+  case kVK_ANSI_O:
+    return igl::shell::Key::O;
+  case kVK_ANSI_P:
+    return igl::shell::Key::P;
+  case kVK_ANSI_Q:
+    return igl::shell::Key::Q;
+  case kVK_ANSI_R:
+    return igl::shell::Key::R;
+  case kVK_ANSI_S:
+    return igl::shell::Key::S;
+  case kVK_ANSI_T:
+    return igl::shell::Key::T;
+  case kVK_ANSI_U:
+    return igl::shell::Key::U;
+  case kVK_ANSI_V:
+    return igl::shell::Key::V;
+  case kVK_ANSI_W:
+    return igl::shell::Key::W;
+  case kVK_ANSI_Y:
+    return igl::shell::Key::Y;
+  case kVK_ANSI_X:
+    return igl::shell::Key::X;
+  case kVK_ANSI_Z:
+    return igl::shell::Key::Z;
+
+  // Digits
+  case kVK_ANSI_0:
+    return igl::shell::Key::Zero;
+  case kVK_ANSI_1:
+    return igl::shell::Key::One;
+  case kVK_ANSI_2:
+    return igl::shell::Key::Two;
+  case kVK_ANSI_3:
+    return igl::shell::Key::Three;
+  case kVK_ANSI_4:
+    return igl::shell::Key::Four;
+  case kVK_ANSI_5:
+    return igl::shell::Key::Five;
+  case kVK_ANSI_6:
+    return igl::shell::Key::Six;
+  case kVK_ANSI_7:
+    return igl::shell::Key::Seven;
+  case kVK_ANSI_8:
+    return igl::shell::Key::Eight;
+  case kVK_ANSI_9:
+    return igl::shell::Key::Nine;
+
+    // Punctuation
+  case kVK_ANSI_Grave:
+    return igl::shell::Key::GraveAccent;
+  case kVK_ANSI_Minus:
+    return igl::shell::Key::Minus;
+  case kVK_ANSI_Equal:
+    return igl::shell::Key::Equal;
+  case kVK_ANSI_RightBracket:
+    return igl::shell::Key::RightBracket;
+  case kVK_ANSI_LeftBracket:
+    return igl::shell::Key::LeftBracket;
+  case kVK_ANSI_Backslash:
+    return igl::shell::Key::Backslash;
+  case kVK_ANSI_Semicolon:
+    return igl::shell::Key::Semicolon;
+  case kVK_ANSI_Quote:
+    return igl::shell::Key::Apostrophe;
+  case kVK_ANSI_Comma:
+    return igl::shell::Key::Comma;
+  case kVK_ANSI_Period:
+    return igl::shell::Key::Period;
+  case kVK_ANSI_Slash:
+    return igl::shell::Key::Slash;
+
+    // Function
+  case kVK_F1:
+    return igl::shell::Key::F1;
+  case kVK_F2:
+    return igl::shell::Key::F2;
+  case kVK_F3:
+    return igl::shell::Key::F3;
+  case kVK_F4:
+    return igl::shell::Key::F4;
+  case kVK_F5:
+    return igl::shell::Key::F5;
+  case kVK_F6:
+    return igl::shell::Key::F6;
+  case kVK_F7:
+    return igl::shell::Key::F7;
+  case kVK_F8:
+    return igl::shell::Key::F8;
+  case kVK_F9:
+    return igl::shell::Key::F9;
+  case kVK_F10:
+    return igl::shell::Key::F10;
+  case kVK_F11:
+    return igl::shell::Key::F11;
+  case kVK_F12:
+    return igl::shell::Key::F12;
+
+  // Keypad
+  case kVK_ANSI_KeypadClear:
+    return igl::shell::Key::NumLock;
+  case kVK_ANSI_Keypad0:
+    return igl::shell::Key::Keypad0;
+  case kVK_ANSI_Keypad1:
+    return igl::shell::Key::Keypad1;
+  case kVK_ANSI_Keypad2:
+    return igl::shell::Key::Keypad2;
+  case kVK_ANSI_Keypad3:
+    return igl::shell::Key::Keypad3;
+  case kVK_ANSI_Keypad4:
+    return igl::shell::Key::Keypad4;
+  case kVK_ANSI_Keypad5:
+    return igl::shell::Key::Keypad5;
+  case kVK_ANSI_Keypad6:
+    return igl::shell::Key::Keypad6;
+  case kVK_ANSI_Keypad7:
+    return igl::shell::Key::Keypad7;
+  case kVK_ANSI_Keypad8:
+    return igl::shell::Key::Keypad8;
+  case kVK_ANSI_Keypad9:
+    return igl::shell::Key::Keypad9;
+  case kVK_ANSI_KeypadDecimal:
+    return igl::shell::Key::KeypadDecimal;
+  case kVK_ANSI_KeypadDivide:
+    return igl::shell::Key::KeypadDivide;
+  case kVK_ANSI_KeypadMultiply:
+    return igl::shell::Key::KeypadMultiply;
+  case kVK_ANSI_KeypadMinus:
+    return igl::shell::Key::KeypadSubtract;
+  case kVK_ANSI_KeypadPlus:
+    return igl::shell::Key::KeypadAdd;
+  case kVK_ANSI_KeypadEnter:
+    return igl::shell::Key::KeypadEnter;
+  case kVK_ANSI_KeypadEquals:
+    return igl::shell::Key::KeypadEqual;
+
+  // Esoteric
+  case 0x6E:
+    return igl::shell::Key::Menu;
+
+  default:
+    return {};
+  }
+}
+
 - (void)keyUp:(NSEvent*)event {
-  shellPlatform_->getInputDispatcher().queueEvent(igl::shell::KeyEvent(false, event.keyCode));
+  auto shellKey = convertToShellKey(event.keyCode);
+  if (!shellKey.has_value()) {
+    return;
+  }
+  shellPlatform_->getInputDispatcher().queueEvent(igl::shell::KeyEvent(false, shellKey.value()));
 }
 
 - (void)keyDown:(NSEvent*)event {
-  shellPlatform_->getInputDispatcher().queueEvent(igl::shell::KeyEvent(true, event.keyCode));
+  auto shellKey = convertToShellKey(event.keyCode);
+  if (!shellKey.has_value()) {
+    return;
+  }
+  shellPlatform_->getInputDispatcher().queueEvent(igl::shell::KeyEvent(true, shellKey.value()));
 }
 
 - (void)mouseDown:(NSEvent*)event {

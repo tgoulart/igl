@@ -14,6 +14,7 @@
 
 - (id)initWithFrame:(NSRect)frame device:(nullable id<MTLDevice>)device {
   if (self = [super initWithFrame:frame device:device]) {
+    _lastKnownModifierFlags = 0;
     [self addFullScreenTrackingArea];
   }
   return self;
@@ -64,14 +65,26 @@
   if (viewController) {
     [viewController keyUp:event];
   }
-  [self interpretKeyEvents:[NSArray arrayWithObject:event]];
 }
 
 - (void)keyDown:(NSEvent*)event {
   if (viewController) {
     [viewController keyDown:event];
   }
-  [self interpretKeyEvents:[NSArray arrayWithObject:event]];
+}
+
+- (void)flagsChanged:(NSEvent*)event {
+  NSUInteger flags = [event modifierFlags];
+  if (flags != _lastKnownModifierFlags) {
+    if (viewController) {
+      if (flags > _lastKnownModifierFlags) {
+        [viewController keyDown:event];
+      } else {
+        [viewController keyUp:event];
+      }
+    }
+    _lastKnownModifierFlags = flags;
+  }
 }
 
 @end

@@ -8,6 +8,7 @@
 #import <MetalKit/MetalKit.h>
 
 @interface MetalView : MTKView {
+  NSEventModifierFlags _lastKnownModifierFlags;
 }
 
 - (void)setViewController:(NSViewController*)newController;

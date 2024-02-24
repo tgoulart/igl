@@ -59,7 +59,7 @@ function(ADD_SHELL_SESSION_WITH_SRCS target srcs libs)
             COMMENT "Compiling NIB file ${XIBFILE}.nib")
   endif()
   target_link_libraries(
-    ${target} PUBLIC "-framework AVFoundation" "-framework CoreGraphics" "-framework CoreMotion" "-framework AppKit"
+    ${target} PUBLIC "-framework AVFoundation" "-framework Carbon" "-framework CoreGraphics" "-framework CoreMotion" "-framework AppKit"
                      "-framework Metal" "-framework MetalKit" "-framework OpenGL" "-framework QuartzCore")
   set_target_properties(${target} PROPERTIES MACOSX_BUNDLE TRUE RESOURCE "${XIBFILE}")
   set_source_files_properties(${RESOURCES} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
