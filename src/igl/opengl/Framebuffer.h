@@ -158,6 +158,7 @@ class CurrentFramebuffer final : public Framebuffer {
  public:
   using Super = Framebuffer;
   explicit CurrentFramebuffer(IContext& context);
+  CurrentFramebuffer(IContext& context, uint32_t samples);
 
   // IFramebuffer
   std::vector<size_t> getColorAttachmentIndices() const override;

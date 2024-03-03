@@ -801,7 +801,9 @@ void CustomFramebuffer::unbind() const {
 ///--------------------------------------
 /// MARK: - CurrentFramebuffer
 
-CurrentFramebuffer::CurrentFramebuffer(IContext& context) : Super(context) {
+CurrentFramebuffer::CurrentFramebuffer(IContext& context) : CurrentFramebuffer(context, 0) {}
+
+CurrentFramebuffer::CurrentFramebuffer(IContext& context, uint32_t samples) : Super(context) {
   getContext().getIntegerv(GL_FRAMEBUFFER_BINDING, reinterpret_cast<GLint*>(&frameBufferID_));
 
   GLint viewport[4];
@@ -811,7 +813,8 @@ CurrentFramebuffer::CurrentFramebuffer(IContext& context) : Super(context) {
   viewport_.width = static_cast<float>(viewport[2]);
   viewport_.height = static_cast<float>(viewport[3]);
 
-  colorAttachment_ = std::make_shared<DummyTexture>(Size(viewport_.width, viewport_.height));
+  colorAttachment_ = std::make_shared<DummyTexture>(
+      Size(viewport_.width, viewport_.height), TextureFormat::BGRA_UNorm8, samples);
 }
 
 std::vector<size_t> CurrentFramebuffer::getColorAttachmentIndices() const {

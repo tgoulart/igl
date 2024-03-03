@@ -14,8 +14,10 @@
 namespace igl::opengl {
 class DummyTexture : public ITexture {
  public:
-  explicit DummyTexture(Size size, TextureFormat format = TextureFormat::BGRA_UNorm8) :
-    ITexture(format), size_(size) {}
+  explicit DummyTexture(Size size,
+                        TextureFormat format = TextureFormat::BGRA_UNorm8,
+                        uint32_t samples = 0) :
+    ITexture(format), size_(size), samples_(samples) {}
   ~DummyTexture() override = default;
 
   [[nodiscard]] Dimensions getDimensions() const override {
@@ -34,6 +36,9 @@ class DummyTexture : public ITexture {
     return 0;
   }
   [[nodiscard]] uint32_t getSamples() const override {
+    if (samples_ != 0) {
+      return samples_;
+    }
     IGL_DEBUG_ASSERT_NOT_REACHED();
     return 1;
   }
@@ -59,5 +64,6 @@ class DummyTexture : public ITexture {
 
  private:
   Size size_;
+  uint32_t samples_;
 };
 } // namespace igl::opengl
