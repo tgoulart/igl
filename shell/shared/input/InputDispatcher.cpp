@@ -56,6 +56,17 @@ void InputDispatcher::processEvents() {
           break;
         }
       }
+    } else if (event.type == EventType::GamepadDevice || event.type == EventType::GamepadButton) {
+      for (auto& listener : _gamepadListeners) {
+        if (event.type == EventType::GamepadDevice &&
+            listener->process(std::get<GamepadDeviceEvent>(event.data))) {
+          break;
+        }
+        if (event.type == EventType::GamepadButton &&
+            listener->process(std::get<GamepadButtonEvent>(event.data))) {
+          break;
+        }
+      }
     }
 
     _events.pop();
@@ -118,6 +129,20 @@ void InputDispatcher::removeRayListener(const std::shared_ptr<IRayListener>& lis
   }
 }
 
+void InputDispatcher::addGamepadListener(const std::shared_ptr<IGamepadListener>& listener) {
+  std::lock_guard<std::mutex> const guard(_mutex);
+  _gamepadListeners.push_back(listener);
+}
+
+void InputDispatcher::removeGamepadListener(const std::shared_ptr<IGamepadListener>& listener) {
+  std::lock_guard<std::mutex> const guard(_mutex);
+  for (int i = _gamepadListeners.size() - 1; i >= 0; --i) {
+    if (listener.get() == _gamepadListeners[i].get()) {
+      _gamepadListeners.erase(_gamepadListeners.begin() + i);
+    }
+  }
+}
+
 #define DEFINE_queueEvent_FUNCTION(EventClass, EventType) \
   void InputDispatcher::queueEvent(EventClass&& event) {  \
     std::lock_guard<std::mutex> guard(_mutex);            \
@@ -131,6 +156,8 @@ DEFINE_queueEvent_FUNCTION(TouchEvent, EventType::Touch);
 DEFINE_queueEvent_FUNCTION(RayEvent, EventType::Ray);
 DEFINE_queueEvent_FUNCTION(CharacterEvent, EventType::Character);
 DEFINE_queueEvent_FUNCTION(KeyEvent, EventType::Key);
+DEFINE_queueEvent_FUNCTION(GamepadDeviceEvent, EventType::GamepadDevice);
+DEFINE_queueEvent_FUNCTION(GamepadButtonEvent, EventType::GamepadButton);
 
 } // namespace shell
 } // namespace igl

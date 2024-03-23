@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include "GamepadListener.h"
 #include "KeyListener.h"
 #include "MouseListener.h"
 #include "RayListener.h"
@@ -36,6 +37,9 @@ class InputDispatcher {
   void addRayListener(const std::shared_ptr<IRayListener>& listener);
   void removeRayListener(const std::shared_ptr<IRayListener>& listener);
 
+  void addGamepadListener(const std::shared_ptr<IGamepadListener>& listener);
+  void removeGamepadListener(const std::shared_ptr<IGamepadListener>& listener);
+
   // Platform methods
   void queueEvent(MouseButtonEvent&& event);
   void queueEvent(MouseMotionEvent&& event);
@@ -44,6 +48,8 @@ class InputDispatcher {
   void queueEvent(CharacterEvent&& event);
   void queueEvent(KeyEvent&& event);
   void queueEvent(RayEvent&& event);
+  void queueEvent(GamepadDeviceEvent&& event);
+  void queueEvent(GamepadButtonEvent&& event);
 
   void processEvents();
 
@@ -60,6 +66,9 @@ class InputDispatcher {
     Key,
     // Ray
     Ray,
+    // Gamepad
+    GamepadDevice,
+    GamepadButton,
   };
 
   struct Event {
@@ -70,7 +79,9 @@ class InputDispatcher {
                               TouchEvent,
                               CharacterEvent,
                               KeyEvent,
-                              RayEvent>;
+                              RayEvent,
+                              GamepadDeviceEvent,
+                              GamepadButtonEvent>;
     Data data;
 
     Event(EventType type, Data&& data) : type(type), data(data) {}
@@ -81,6 +92,7 @@ class InputDispatcher {
   std::vector<std::shared_ptr<ITouchListener>> _touchListeners;
   std::vector<std::shared_ptr<IKeyListener>> _keyListeners;
   std::vector<std::shared_ptr<IRayListener>> _rayListeners;
+  std::vector<std::shared_ptr<IGamepadListener>> _gamepadListeners;
   std::queue<Event> _events;
 };
 
