@@ -138,7 +138,6 @@ enum class Key {
 struct CharacterEvent {
   unsigned int character;
 
-  CharacterEvent() = default;
   CharacterEvent(unsigned int character) : character(character) {}
 };
 
@@ -146,7 +145,6 @@ struct KeyEvent {
   Key key;
   bool isDown;
 
-  KeyEvent() = default;
   KeyEvent(bool isDown, Key key) : key(key), isDown(isDown) {}
 };
 

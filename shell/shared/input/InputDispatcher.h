@@ -37,13 +37,13 @@ class InputDispatcher {
   void removeRayListener(const std::shared_ptr<IRayListener>& listener);
 
   // Platform methods
-  void queueEvent(const MouseButtonEvent& event);
-  void queueEvent(const MouseMotionEvent& event);
-  void queueEvent(const MouseWheelEvent& event);
-  void queueEvent(const TouchEvent& event);
-  void queueEvent(const CharacterEvent& event);
-  void queueEvent(const KeyEvent& event);
-  void queueEvent(const RayEvent& event);
+  void queueEvent(MouseButtonEvent&& event);
+  void queueEvent(MouseMotionEvent&& event);
+  void queueEvent(MouseWheelEvent&& event);
+  void queueEvent(TouchEvent&& event);
+  void queueEvent(CharacterEvent&& event);
+  void queueEvent(KeyEvent&& event);
+  void queueEvent(RayEvent&& event);
 
   void processEvents();
 
@@ -72,6 +72,8 @@ class InputDispatcher {
                               KeyEvent,
                               RayEvent>;
     Data data;
+
+    Event(EventType type, Data&& data) : type(type), data(data) {}
   };
 
   std::mutex _mutex;

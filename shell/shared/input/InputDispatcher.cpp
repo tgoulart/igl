@@ -118,65 +118,19 @@ void InputDispatcher::removeRayListener(const std::shared_ptr<IRayListener>& lis
   }
 }
 
-void InputDispatcher::queueEvent(const MouseButtonEvent& event) {
-  std::lock_guard<std::mutex> guard(_mutex);
-  InputDispatcher::Event evt;
-  evt.type = EventType::MouseButton;
-  evt.data = event;
-  _events.push(evt);
-}
+#define DEFINE_queueEvent_FUNCTION(EventClass, EventType) \
+  void InputDispatcher::queueEvent(EventClass&& event) {  \
+    std::lock_guard<std::mutex> guard(_mutex);            \
+    _events.emplace(EventType, std::move(event));         \
+  }
 
-void InputDispatcher::queueEvent(const MouseMotionEvent& event) {
-  std::lock_guard<std::mutex> guard(_mutex);
-  InputDispatcher::Event evt;
-  evt.type = EventType::MouseMotion;
-  evt.data = event;
-  _events.push(evt);
-}
-
-void InputDispatcher::queueEvent(const MouseWheelEvent& event) {
-  std::lock_guard<std::mutex> guard(_mutex);
-  InputDispatcher::Event evt;
-  evt.type = EventType::MouseWheel;
-  evt.data = event;
-  _events.push(evt);
-}
-
-void InputDispatcher::queueEvent(const TouchEvent& event) {
-  std::lock_guard<std::mutex> guard(_mutex);
-
-  InputDispatcher::Event evt;
-  evt.type = EventType::Touch;
-  evt.data = event;
-  _events.push(evt);
-}
-
-void InputDispatcher::queueEvent(const RayEvent& event) {
-  std::lock_guard<std::mutex> guard(_mutex);
-
-  InputDispatcher::Event evt;
-  evt.type = EventType::Ray;
-  evt.data = event;
-  _events.push(evt);
-}
-
-void InputDispatcher::queueEvent(const CharacterEvent& event) {
-  std::lock_guard<std::mutex> guard(_mutex);
-
-  InputDispatcher::Event evt;
-  evt.type = EventType::Character;
-  evt.data = event;
-  _events.push(evt);
-}
-
-void InputDispatcher::queueEvent(const KeyEvent& event) {
-  std::lock_guard<std::mutex> guard(_mutex);
-
-  InputDispatcher::Event evt;
-  evt.type = EventType::Key;
-  evt.data = event;
-  _events.push(evt);
-}
+DEFINE_queueEvent_FUNCTION(MouseButtonEvent, EventType::MouseButton);
+DEFINE_queueEvent_FUNCTION(MouseMotionEvent, EventType::MouseMotion);
+DEFINE_queueEvent_FUNCTION(MouseWheelEvent, EventType::MouseWheel);
+DEFINE_queueEvent_FUNCTION(TouchEvent, EventType::Touch);
+DEFINE_queueEvent_FUNCTION(RayEvent, EventType::Ray);
+DEFINE_queueEvent_FUNCTION(CharacterEvent, EventType::Character);
+DEFINE_queueEvent_FUNCTION(KeyEvent, EventType::Key);
 
 } // namespace shell
 } // namespace igl

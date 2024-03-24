@@ -22,7 +22,6 @@ struct MouseButtonEvent {
   float x;
   float y;
 
-  MouseButtonEvent() = default;
   MouseButtonEvent(MouseButton button, bool isDown, float x, float y) :
     button(button), isDown(isDown), x(x), y(y) {}
 };
@@ -33,14 +32,13 @@ struct MouseMotionEvent {
   float dx;
   float dy;
 
-  MouseMotionEvent() = default;
   MouseMotionEvent(float x, float y, float dx, float dy) : x(x), y(y), dx(dx), dy(dy) {}
 };
 
 struct MouseWheelEvent {
   float dx;
   float dy;
-  MouseWheelEvent() = default;
+
   MouseWheelEvent(float dx, float dy) : dx(dx), dy(dy) {}
 };
 
