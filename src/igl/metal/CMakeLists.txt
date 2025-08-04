@@ -22,7 +22,7 @@ endif()
 
 add_library(IGLMetal ${SRC_FILES} ${HEADER_FILES})
 
-target_link_libraries(IGLMetal PRIVATE IGLLibrary "-framework Metal" "-framework QuartzCore")
+target_link_libraries(IGLMetal PRIVATE IGLLibrary "-framework Metal" "-framework QuartzCore" "-framework CoreGraphics" "-framework CoreVideo")
 
 igl_set_cxxstd(IGLMetal 20)
 igl_set_folder(IGLMetal "IGL")
