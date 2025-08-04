@@ -47,17 +47,14 @@ endif()
 
 if(IGL_WITH_OPENGL OR IGL_WITH_OPENGLES OR IGL_WITH_WEBGL)
   add_subdirectory(opengl)
-  target_link_libraries(IGLLibrary PUBLIC IGLOpenGL)
 endif()
 
 if(IGL_WITH_VULKAN)
   add_subdirectory(vulkan)
-  target_link_libraries(IGLLibrary PUBLIC IGLVulkan)
 endif()
 
 if(IGL_WITH_METAL)
   add_subdirectory(metal)
-  target_link_libraries(IGLLibrary PUBLIC IGLMetal)
 endif()
 
 # OpenGL tests use GLES on Windows and we do not use Angle with CMake - so OGL
