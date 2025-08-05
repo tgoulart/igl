@@ -272,4 +272,12 @@ std::shared_ptr<GLXSharedModule> Context::getSharedModule() const {
   return module_;
 }
 
+GLXDrawable Context::getWindowHandle() const {
+  return windowHandle_;
+}
+
+GLXContext Context::getContextHandle() const {
+  return contextHandle_;
+}
+
 } // namespace igl::opengl::glx

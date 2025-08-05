@@ -43,6 +43,8 @@ class Context : public IContext {
   std::unique_ptr<IContext> createShareContext(Result* outResult) override;
 
   std::shared_ptr<GLXSharedModule> getSharedModule() const;
+  GLXDrawable getWindowHandle() const;
+  GLXContext getContextHandle() const;
 
  private:
   const bool contextOwned_ = false;
