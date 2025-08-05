@@ -213,7 +213,7 @@ if(UNIX AND NOT APPLE AND NOT ANDROID AND NOT EMSCRIPTEN)
   if(IGL_WITH_SAMPLES OR IGL_WITH_SHELL)
     target_compile_definitions(IGLLibrary PUBLIC "IGL_PLATFORM_LINUX_USE_EGL=0")
   else()
-    target_compile_definitions(IGLLibrary PUBLIC "IGL_PLATFORM_LINUX_USE_EGL=1")
+    target_compile_definitions(IGLLibrary PUBLIC "IGL_PLATFORM_LINUX_USE_EGL=0")
   endif()
 endif()
 
