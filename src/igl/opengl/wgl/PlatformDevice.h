@@ -33,6 +33,7 @@ class PlatformDevice : public opengl::PlatformDevice {
 
   /// Returns a texture representing the WGL Surface associated with this device's context.
   std::shared_ptr<ITexture> createTextureFromNativeDrawable(Result* outResult);
+  std::shared_ptr<ITexture> createTextureFromNativeDepth(Result* outResult);
   std::shared_ptr<ITexture> createTextureFromNativeDepth(int width, int height, Result* outResult);
 
  protected:

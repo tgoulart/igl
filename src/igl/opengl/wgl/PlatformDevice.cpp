@@ -57,6 +57,12 @@ std::shared_ptr<ITexture> PlatformDevice::createTextureFromNativeDrawable(Result
   return drawableTexture_;
 }
 
+std::shared_ptr<ITexture> PlatformDevice::createTextureFromNativeDepth(Result* outResult) {
+  return createTextureFromNativeDepth((int)(dimension_.right - dimension_.left),
+                                      (int)(dimension_.bottom - dimension_.top),
+                                      outResult);
+}
+
 std::shared_ptr<ITexture> PlatformDevice::createTextureFromNativeDepth(int width,
                                                                        int height,
                                                                        Result* outResult) {
