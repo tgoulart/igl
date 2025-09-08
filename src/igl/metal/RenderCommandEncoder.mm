@@ -205,12 +205,14 @@ void RenderCommandEncoder::bindFrontFacingWinding(const WindingMode& frontFaceWi
 
 void RenderCommandEncoder::bindPolygonFillMode(const PolygonFillMode& polygonFillMode) {
   IGL_DEBUG_ASSERT(encoder_);
-
-  if (polygonFillMode == PolygonFillMode::Fill) {
-    return;
+  switch (polygonFillMode) {
+  case PolygonFillMode::Fill:
+    [encoder_ setTriangleFillMode:MTLTriangleFillModeFill];
+    break;
+  case PolygonFillMode::Line:
+    [encoder_ setTriangleFillMode:MTLTriangleFillModeLines];
+    break;
   }
-
-  [encoder_ setTriangleFillMode:MTLTriangleFillModeLines];
 }
 
 void RenderCommandEncoder::bindRenderPipelineState(
