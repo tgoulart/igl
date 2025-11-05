@@ -462,13 +462,13 @@ void RenderCommandAdapter::unbindTextures(IContext& context,
 }
 
 GLenum RenderCommandAdapter::toMockWireframeMode(GLenum mode) const {
-#if defined(IGL_OPENGL_ES)
-  auto* const pipelineState = static_cast<RenderPipelineState*>(pipelineState_.get());
-  const bool modeNeedsConversion = mode == GL_TRIANGLES || mode != GL_TRIANGLE_STRIP;
-  if (pipelineState->getPolygonFillMode() == igl::PolygonFillMode::Line && modeNeedsConversion) {
-    return GL_LINE_STRIP;
+  if (DeviceFeatureSet::usesOpenGLES()) {
+    auto* const pipelineState = static_cast<RenderPipelineState*>(pipelineState_.get());
+    const bool modeNeedsConversion = mode == GL_TRIANGLES || mode != GL_TRIANGLE_STRIP;
+    if (pipelineState->getPolygonFillMode() == igl::PolygonFillMode::Line && modeNeedsConversion) {
+      return GL_LINE_STRIP;
+    }
   }
-#endif
 
   return mode;
 }
