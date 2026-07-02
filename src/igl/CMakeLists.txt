@@ -27,7 +27,6 @@ endif()
 add_library(IGLLibrary ${SRC_FILES} ${HEADER_FILES})
 
 target_include_directories(IGLLibrary PUBLIC "${IGL_ROOT_DIR}/src")
-target_include_directories(IGLLibrary PUBLIC "${IGL_ROOT_DIR}/third-party/deps/src/glm")
 
 if(NOT EMSCRIPTEN)
   # Only link fmt if it's available, use PRIVATE to avoid exporting the dependency
